@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../static/style.css" />
+    <title>Web Scraping and Analysis</title>
+</head>
+
+<body>
+    <h1>Web Scraping and Analysis</h1>
+
+    <form method="POST">
+        <label for="url">Enter URL:</label>
+        <input type="text" name="url" id="url" value="https://wsa-test.vercel.app/" required> 
+        <br/>
+        <label for="elements-to-scrape">Elements to scrape?:</label>
+        <input type="text" name="elements-to-scrape" id="elements-to-scrape" placeholder="h3, p, span">
+        <br/>
+        <button type="submit">Scrape and Analyze</button>
+    </form>
+
+    {% if data %}
+    <h2>Sentiment Analysis:</h2>
+    <ul>
+        {% for element, analysis in data.items() %}
+        <li><strong>{{ element }}:</strong></li>
+        <ul>
+            <li>Text: {{ analysis['text'] }}</li>
+            <li>Overall Sentiment: {{ analysis['overall_sentiment'] }}</li>
+            <li>Sentiment Scores: {{ analysis['sentiment_scores'] }}</li>
+            <li>Word Count: {{ analysis['word-count'] }}</li>
+        </ul>
+        {% endfor %}
+    </ul>
+
+
+    {% endif %}
+
+    {% if data and data.get('error') %}
+    <p class="error">{{ data['error'] }}</p>
+    {% endif %}
+</body>
+
+</html>
