@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from bs4 import BeautifulSoup
 from textblob import TextBlob
 import requests
+import re
 
 app = Flask(__name__)
 
@@ -33,9 +34,14 @@ def scrape():
             # Perform sentiment analysis
             for element, text_list in scraped_data.items():
                 sentiment_scores = []
+                total_words = 0
                 for text in text_list:
                     analysis = TextBlob(text)
                     sentiment_scores.append(analysis.sentiment.polarity)
+
+                    # Determine word-count
+                    words = re.findall(r'\w+', text)  # Use regex to find words
+                    total_words += len(words)
 
                 # Determine overall sentiment
                 if len(sentiment_scores) == 0:
@@ -44,9 +50,12 @@ def scrape():
                     overall_sentiment = sum(sentiment_scores) / len(sentiment_scores)
                     scraped_data[element] = {
                         'text': text_list,
+                        'word-count': total_words,
                         'overall_sentiment': 'positive' if overall_sentiment > 0 else 'negative' if overall_sentiment < 0 else 'neutral',
                         'sentiment_scores': sentiment_scores
                 }
+                    
+       
             return jsonify(scraped_data), 200
         else:
             return jsonify({'error': 'Failed to fetch the URL'}), 500
