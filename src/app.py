@@ -12,16 +12,19 @@ def scrape():
         data= request.get_json()
         url = data['url']
 
+        #TODO: make sure the user knows to separate elements by commas
+        elements_string = data['elements-to-scrape']
+        elements = [element.strip() for element in elements_string.split(',')]
+
         #Make a request to the URL we want to scrape
         response = requests.get(url)
 
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            result = {
-                'h3': [h3.text for h3 in soup.find_all('h3')],
-                'p': [p.text for p in soup.find_all('p')]
-            }
+            result = {}
+            for element in elements:
+                result[element] = [tag.text for tag in soup.find_all(element)]            
 
             return jsonify(result), 200
         else:
