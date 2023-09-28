@@ -1,0 +1,10 @@
+services:
+  app:
+    build: .
+    container_name: webscrapingapi
+    command: python3 src/app.py
+    ports:
+      - "3000:8080"
+    volumes:
+      - ./src:/app/src
+
